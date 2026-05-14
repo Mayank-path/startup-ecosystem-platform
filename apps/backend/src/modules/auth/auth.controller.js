@@ -35,6 +35,33 @@ const login = asyncHandler(async (req, res) => {
     }
   )
 
+  const refreshToken = asyncHandler(
+    async (req, res) => {
+      const { refreshToken } = req.body
+  
+      const data =
+        await authService.refreshAccessToken(
+          refreshToken
+        )
+  
+      return ApiResponse.success(
+        res,
+        data,
+        "Access token refreshed"
+      )
+    }
+  )
+
+  const logout = asyncHandler(
+    async (req, res) => {
+      return ApiResponse.success(
+        res,
+        null,
+        "Logout successful"
+      )
+    }
+  )
+
 module.exports = {
-  register,login,getCurrentUser
+  register,login,getCurrentUser,refreshToken,logout
 }

@@ -4,7 +4,7 @@ const authController = require("./auth.controller")
 
 const validate = require("../../shared/middleware/validate.middleware")
 
-const { registerSchema,loginSchema } = require("./auth.validation")
+const { registerSchema,loginSchema, refreshTokenSchema } = require("./auth.validation")
 
 const authMiddleware = require("../../shared/middleware/auth.middleware")
 
@@ -25,5 +25,16 @@ router.get(
     authMiddleware,
     authController.getCurrentUser
 )
+
+router.post(
+    "/refresh-token",
+    validate(refreshTokenSchema),
+    authController.refreshToken
+)
+
+router.post(
+    "/logout",
+    authController.logout
+  )
 
 module.exports = router

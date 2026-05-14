@@ -86,7 +86,34 @@ const loginUser = async (payload) => {
       refreshToken,
     }
   }
+
+  const refreshAccessToken = async (
+    refreshToken
+  ) => {
+    if (!refreshToken) {
+      throw new AppError(
+        "Refresh token missing",
+        401
+      )
+    }
+  
+    const decoded =
+      tokenService.verifyRefreshToken(
+        refreshToken
+      )
+  
+    const accessToken =
+      tokenService.generateAccessToken({
+        userId: decoded.userId,
+        role: decoded.role,
+      })
+  
+    return {
+      accessToken,
+    }
+  }
 module.exports = {
   registerUser,
   loginUser,
+  refreshAccessToken,
 }

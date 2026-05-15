@@ -2,9 +2,7 @@ const AppError = require("../../core/AppError")
 
 const tokenService = require("../services/token.service")
 
-const authRepository = require("../../modules/auth/auth.repository")
-
-const authMiddleware = async (
+const authMiddleware = (
   req,
   res,
   next
@@ -27,21 +25,11 @@ const authMiddleware = async (
       authHeader.split(" ")[1]
 
     const decoded =
-      tokenService.verifyAccessToken(token)
-
-    const user =
-      await authRepository.findById(
-        decoded.userId
-      ).select("-password")
-
-    if (!user) {
-      throw new AppError(
-        "User not found",
-        401
+      tokenService.verifyAccessToken(
+        token
       )
-    }
 
-    req.user = user
+    req.user = decoded
 
     next()
   } catch (error) {

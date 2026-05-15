@@ -23,7 +23,12 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["ADMIN", "ENTREPRENEUR", "INVESTOR", "STUDENT"],
+      enum: [
+        "ADMIN",
+        "ENTREPRENEUR",
+        "INVESTOR",
+        "STUDENT",
+      ],
       default: "STUDENT",
     },
 
@@ -36,10 +41,42 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
+    bio: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    college: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    github: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    linkedin: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    skills: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true,
   }
 )
 
-module.exports = mongoose.model("User", userSchema)
+module.exports = mongoose.model(
+  "User",
+  userSchema
+) 

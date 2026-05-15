@@ -18,6 +18,20 @@ const login = asyncHandler(async (req, res) => {
       req.body
     )
   
+    res.cookie(
+      "refreshToken",
+      data.refreshToken,
+      {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+        maxAge:
+          7 * 24 * 60 * 60 * 1000,
+      }
+    )
+  
+    delete data.refreshToken
+  
     return ApiResponse.success(
       res,
       data,
@@ -37,7 +51,7 @@ const login = asyncHandler(async (req, res) => {
 
   const refreshToken = asyncHandler(
     async (req, res) => {
-      const { refreshToken } = req.body
+        const refreshToken = req.cookies.refreshToken
   
       const data =
         await authService.refreshAccessToken(
@@ -54,6 +68,8 @@ const login = asyncHandler(async (req, res) => {
 
   const logout = asyncHandler(
     async (req, res) => {
+        res.clearCookie("refreshToken")
+        
       return ApiResponse.success(
         res,
         null,

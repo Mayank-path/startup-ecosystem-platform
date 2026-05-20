@@ -1,0 +1,75 @@
+const asyncHandler = require(
+    "../../core/asyncHandler"
+  )
+  
+  const ApiResponse = require(
+    "../../core/ApiResponse"
+  )
+  
+  const jobService = require("./job.service")
+  
+  const createJob = asyncHandler(
+    async (req, res) => {
+      const job =
+        await jobService.createJob(
+          req.user,
+          req.body
+        )
+  
+      return ApiResponse.success(
+        res,
+        job,
+        "Job created successfully",
+        201
+      )
+    }
+  )
+  
+  const getJobs = asyncHandler(
+    async (req, res) => {
+      const jobs =
+        await jobService.getJobs()
+  
+      return ApiResponse.success(
+        res,
+        jobs,
+        "Jobs fetched successfully"
+      )
+    }
+  )
+  
+  const getJobById = asyncHandler(
+    async (req, res) => {
+      const job =
+        await jobService.getJobById(
+          req.params.id
+        )
+  
+      return ApiResponse.success(
+        res,
+        job,
+        "Job fetched successfully"
+      )
+    }
+  )
+  
+  const getJobsByStartup =
+    asyncHandler(async (req, res) => {
+      const jobs =
+        await jobService.getJobsByStartup(
+          req.params.startupId
+        )
+  
+      return ApiResponse.success(
+        res,
+        jobs,
+        "Startup jobs fetched successfully"
+      )
+    })
+  
+  module.exports = {
+    createJob,
+    getJobs,
+    getJobById,
+    getJobsByStartup,
+  }

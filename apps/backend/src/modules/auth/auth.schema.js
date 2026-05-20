@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema(
         "ENTREPRENEUR",
         "INVESTOR",
         "STUDENT",
+        "FREELANCER",
       ],
       default: "STUDENT",
     },

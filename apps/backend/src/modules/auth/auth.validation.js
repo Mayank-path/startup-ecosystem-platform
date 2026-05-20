@@ -10,6 +10,13 @@ const registerSchema = z
       .string()
       .email("Invalid email format"),
 
+    role: z.enum([
+      "STUDENT",
+      "ENTREPRENEUR",
+      "INVESTOR",
+      "FREELANCER",
+    ]),
+
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
@@ -28,20 +35,22 @@ const registerSchema = z
     path: ["confirmPassword"],
   })
 
-  const loginSchema = z.object({
-    email: z
-      .string()
-      .email("Invalid email format"),
-  
-    password: z
-      .string()
-      .min(1, "Password is required"),
-  })
+const loginSchema = z.object({
+  email: z
+    .string()
+    .email("Invalid email format"),
 
-  const refreshTokenSchema = z.object({
-    refreshToken: z.string(),
-  })
+  password: z
+    .string()
+    .min(1, "Password is required"),
+})
+
+const refreshTokenSchema = z.object({
+  refreshToken: z.string(),
+})
 
 module.exports = {
-  registerSchema,loginSchema,refreshTokenSchema,
+  registerSchema,
+  loginSchema,
+  refreshTokenSchema,
 }

@@ -14,6 +14,13 @@ export const registerSchema =
         .email(
           "Invalid email format"
         ),
+      
+        role: z.enum([
+          "STUDENT",
+          "ENTREPRENEUR",
+          "INVESTOR",
+          "FREELANCER",
+        ]),
 
       password: z
         .string()

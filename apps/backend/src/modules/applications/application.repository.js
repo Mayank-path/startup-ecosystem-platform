@@ -46,9 +46,25 @@ const findApplicationsByJob = (
     })
 }
 
+const updateApplicationStatus = (
+  applicationId,
+  status
+) => {
+  return Application.findByIdAndUpdate(
+    applicationId,
+    {
+      status,
+    },
+    {
+      new: true,
+    }
+  )
+}
+
 module.exports = {
   createApplication,
   findApplication,
   findApplicationsByStudent,
   findApplicationsByJob,
+  updateApplicationStatus,
 }

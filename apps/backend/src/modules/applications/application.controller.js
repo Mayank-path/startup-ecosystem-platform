@@ -18,7 +18,7 @@ const asyncHandler = require(
           req.body
         )
   
-      return ApiResponse.success(
+      return ApiResponse.created(
         res,
         application,
         "Applied successfully",
@@ -45,6 +45,7 @@ const asyncHandler = require(
     asyncHandler(async (req, res) => {
       const applications =
         await applicationService.getApplicationsByJob(
+          req.user,
           req.params.jobId
         )
   
@@ -53,10 +54,45 @@ const asyncHandler = require(
         applications,
         "Job applications fetched successfully"
       )
-    })
-  
-  module.exports = {
-    applyJob,
-    getMyApplications,
-    getApplicationsByJob,
+})
+
+const updateApplicationStatus =
+  asyncHandler(async (req, res) => {
+    const application =
+      await applicationService.updateApplicationStatus(
+        req.user,
+        req.params.id,
+        req.body.status
+      )
+
+    return ApiResponse.success(
+      res,
+      application,
+      "Application status updated successfully"
+    )
+})
+
+const uploadResume = asyncHandler(
+  async (req, res) => {
+    const application =
+      await applicationService.uploadResume(
+        req.user,
+        req.params.id,
+        req.file
+      )
+
+    return ApiResponse.success(
+      res,
+      application,
+      "Resume uploaded successfully"
+    )
   }
+)
+  
+module.exports = {
+  applyJob,
+  getMyApplications,
+  getApplicationsByJob,
+  updateApplicationStatus,
+  uploadResume
+}

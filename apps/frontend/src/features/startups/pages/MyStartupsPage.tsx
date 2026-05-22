@@ -89,12 +89,19 @@ function MyStartupsPage() {
             >
               <StartupCard startup={startup} />
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <Link
                   to={`/startups/${startup._id}/edit`}
                   className="rounded-xl border px-4 py-2 text-center text-sm font-medium hover:bg-gray-100"
                 >
                   Edit
+                </Link>
+
+                <Link
+                  to={`/startups/${startup._id}/jobs`}
+                  className="rounded-xl bg-black px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
+                >
+                  Jobs
                 </Link>
 
                 <button

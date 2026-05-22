@@ -31,9 +31,30 @@ const findJobsByStartup = (startupId) => {
   })
 }
 
+const updateJob = (
+  jobId,
+  payload
+) => {
+  return Job.findByIdAndUpdate(
+    jobId,
+    payload,
+    {
+      new: true,
+    }
+  )
+}
+
+const deleteJob = (jobId) => {
+  return Job.findByIdAndDelete(
+    jobId
+  )
+}
+
 module.exports = {
   createJob,
   findJobs,
   findJobById,
   findJobsByStartup,
+  updateJob,
+  deleteJob,
 }

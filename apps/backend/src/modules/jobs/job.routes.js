@@ -40,4 +40,16 @@ router.post(
   jobController.createJob
 )
 
+router.patch(
+  "/:id",
+  authMiddleware,
+  jobController.updateJob
+)
+
+router.delete(
+  "/:id",
+  authMiddleware,
+  jobController.deleteJob
+)
+
 module.exports = router

@@ -20,6 +20,12 @@ import EditStartupPage from "../features/startups/pages/EditStartupPage"
 
 import ExploreJobsPage from "../features/jobs/pages/ExploreJobsPage"
 import JobDetailsPage from "../features/jobs/pages/JobDetailsPage"
+import StartupJobsPage from "../features/jobs/pages/StartupJobsPage"
+import CreateJobPage from "../features/jobs/pages/CreateJobPage"
+import EditJobPage from "../features/jobs/pages/EditJobPage"
+
+import MyApplicationsPage from "../features/applications/pages/MyApplicationsPage"
+import ApplicantsPage from "../features/applications/pages/ApplicantsPage"
 
 export const router = createBrowserRouter([
   {
@@ -97,6 +103,62 @@ export const router = createBrowserRouter([
             element: (
               <RoleProtectedRoute allowedRoles={["ENTREPRENEUR", "ADMIN"]}>
                 <EditStartupPage />
+              </RoleProtectedRoute>
+            ),
+          },
+          {
+            path: "applications",
+            element: <MyApplicationsPage />,
+          },
+          {
+            path: "jobs/:jobId/applicants",
+            element: (
+              <RoleProtectedRoute
+                allowedRoles={[
+                  "ENTREPRENEUR",
+                  "ADMIN",
+                ]}
+              >
+                <ApplicantsPage />
+              </RoleProtectedRoute>
+            ),
+          },
+          {
+            path: "startups/:startupId/jobs",
+            element: (
+              <RoleProtectedRoute
+                allowedRoles={[
+                  "ENTREPRENEUR",
+                  "ADMIN",
+                ]}
+              >
+                <StartupJobsPage />
+              </RoleProtectedRoute>
+            ),
+          },
+          {
+            path: "startups/:startupId/jobs/create",
+            element: (
+              <RoleProtectedRoute
+                allowedRoles={[
+                  "ENTREPRENEUR",
+                  "ADMIN",
+                ]}
+              >
+                <CreateJobPage />
+              </RoleProtectedRoute>
+            ),
+          },
+          {
+            path: "jobs/:id/edit",
+            element: (
+              <RoleProtectedRoute
+                allowedRoles={[
+                  "ENTREPRENEUR",
+                  "ADMIN",
+                ]}
+              >
+                <EditJobPage />
               </RoleProtectedRoute>
             ),
           },

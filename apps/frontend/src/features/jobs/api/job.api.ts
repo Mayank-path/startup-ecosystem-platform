@@ -48,3 +48,25 @@ export const createJob = async (
 
   return response.data
 }
+
+export const updateJob = async (
+  id: string,
+  payload: any
+) => {
+  const response = await api.patch(
+    `/jobs/${id}`,
+    payload
+  )
+
+  return response.data
+}
+
+export const deleteJob = async (
+  id: string
+) => {
+  const response = await api.delete(
+    `/jobs/${id}`
+  )
+
+  return response.data
+}

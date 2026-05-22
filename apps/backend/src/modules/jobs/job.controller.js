@@ -65,11 +65,45 @@ const asyncHandler = require(
         jobs,
         "Startup jobs fetched successfully"
       )
-    })
+})
+
+const updateJob = asyncHandler(
+  async (req, res) => {
+    const job =
+      await jobService.updateJob(
+        req.user,
+        req.params.id,
+        req.body
+      )
+
+    return ApiResponse.success(
+      res,
+      job,
+      "Job updated successfully"
+    )
+  }
+)
+
+const deleteJob = asyncHandler(
+  async (req, res) => {
+    await jobService.deleteJob(
+      req.user,
+      req.params.id
+    )
+
+    return ApiResponse.success(
+      res,
+      null,
+      "Job deleted successfully"
+    )
+  }
+)
   
   module.exports = {
     createJob,
     getJobs,
     getJobById,
     getJobsByStartup,
+    deleteJob,
+    updateJob,
   }

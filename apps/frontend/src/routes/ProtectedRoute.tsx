@@ -2,6 +2,8 @@ import { Navigate } from "react-router-dom"
 
 import { useAuthStore } from "../features/auth/store/auth.store"
 
+import LoadingSpinner from "../components/ui/LoadingSpinner"
+
 interface Props {
   children: React.ReactNode
 }
@@ -20,7 +22,7 @@ function ProtectedRoute({
     )
 
   if (isAuthLoading) {
-    return <div>Loading...</div>
+    return <LoadingSpinner />
   }
 
   if (!user) {

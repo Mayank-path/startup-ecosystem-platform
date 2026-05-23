@@ -108,7 +108,11 @@ export const router = createBrowserRouter([
           },
           {
             path: "applications",
-            element: <MyApplicationsPage />,
+            element: (
+              <RoleProtectedRoute allowedRoles={["STUDENT"]}>
+                <MyApplicationsPage />
+              </RoleProtectedRoute>
+            ),
           },
           {
             path: "jobs/:jobId/applicants",

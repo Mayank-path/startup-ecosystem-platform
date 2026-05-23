@@ -2,6 +2,11 @@ import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 
 import Card from "../../../components/ui/Card"
+import Button from "../../../components/ui/Button"
+import PageHeader from "../../../components/ui/PageHeader"
+import EmptyState from "../../../components/ui/EmptyState"
+import LoadingSpinner from "../../../components/ui/LoadingSpinner"
+import ErrorState from "../../../components/ui/ErrorState"
 
 import {
   getJobsByStartup,
@@ -15,6 +20,7 @@ function StartupJobsPage() {
 
   const [jobs, setJobs] = useState<Job[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [hasError, setHasError] = useState(false)
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -26,6 +32,7 @@ function StartupJobsPage() {
         setJobs(response.data)
       } catch (error) {
         console.log(error)
+        setHasError(true)
       } finally {
         setIsLoading(false)
       }
@@ -53,36 +60,46 @@ function StartupJobsPage() {
   }
 
   if (isLoading) {
-    return <div className="p-6">Loading jobs...</div>
+    return <LoadingSpinner />
+  }
+
+  if (hasError) {
+    return (
+      <div className="mx-auto max-w-5xl p-6">
+        <ErrorState
+          title="Unable to load jobs"
+          description="Please try again later."
+        />
+      </div>
+    )
   }
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-4xl font-bold">
-            Startup Jobs
-          </h1>
-
-          <p className="mt-2 text-gray-600">
-            Manage jobs posted by your startup.
-          </p>
-        </div>
-
-        <Link
-          to={`/startups/${startupId}/jobs/create`}
-          className="rounded-xl bg-black px-5 py-3 text-center font-medium text-white transition hover:bg-gray-800"
-        >
-          Create Job
-        </Link>
-      </div>
+      <PageHeader
+        title="Startup Jobs"
+        subtitle="Manage jobs posted by your startup."
+        action={
+          <Link to={`/startups/${startupId}/jobs/create`}>
+            <Button>
+              Create Job
+            </Button>
+          </Link>
+        }
+      />
 
       {jobs.length === 0 ? (
-        <Card>
-          <p className="text-gray-600">
-            No jobs posted yet.
-          </p>
-        </Card>
+        <EmptyState
+          title="No jobs posted yet"
+          description="Create your first job posting to start receiving applicants."
+          action={
+            <Link to={`/startups/${startupId}/jobs/create`}>
+              <Button>
+                Create Job
+              </Button>
+            </Link>
+          }
+        />
       ) : (
         <div className="space-y-5">
           {jobs.map((job) => (
@@ -110,34 +127,31 @@ function StartupJobsPage() {
                 </div>
 
                 <div className="flex flex-wrap gap-3">
-                  <Link
-                    to={`/jobs/${job._id}`}
-                    className="rounded-xl border px-4 py-2 text-sm font-medium"
-                  >
-                    View Job
+                  <Link to={`/jobs/${job._id}`}>
+                    <Button variant="secondary">
+                      View Job
+                    </Button>
                   </Link>
 
-                  <Link
-                    to={`/jobs/${job._id}/edit`}
-                    className="rounded-xl border px-4 py-2 text-sm font-medium"
-                  >
-                    Edit
+                  <Link to={`/jobs/${job._id}/edit`}>
+                    <Button variant="secondary">
+                      Edit
+                    </Button>
                   </Link>
 
-                  <Link
-                    to={`/jobs/${job._id}/applicants`}
-                    className="rounded-xl bg-black px-4 py-2 text-sm font-medium text-white"
-                  >
-                    View Applicants
+                  <Link to={`/jobs/${job._id}/applicants`}>
+                    <Button>
+                      View Applicants
+                    </Button>
                   </Link>
 
-                  <button
+                  <Button
                     type="button"
+                    variant="danger"
                     onClick={() => handleDeleteJob(job._id)}
-                    className="rounded-xl border border-red-300 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
                   >
                     Delete
-                  </button>
+                  </Button>
                 </div>
               </div>
             </Card>

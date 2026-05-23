@@ -8,9 +8,19 @@ import { useAuthStore } from "../../auth/store/auth.store"
 
 import type { Startup } from "../types/startup.types"
 
+import PageHeader from "../../../components/ui/PageHeader"
+import EmptyState from "../../../components/ui/EmptyState"
+import LoadingSpinner from "../../../components/ui/LoadingSpinner"
+import ErrorState from "../../../components/ui/ErrorState"
+import Button from "../../../components/ui/Button"
+import Input from "../../../components/ui/Input"
+
 function ExploreStartupsPage() {
   const [startups, setStartups] = useState<Startup[]>([])
+  const [search, setSearch] = useState("")
+
   const [isLoading, setIsLoading] = useState(true)
+  const [hasError, setHasError] = useState(false)
 
   const user = useAuthStore((state) => state.user)
 
@@ -22,6 +32,7 @@ function ExploreStartupsPage() {
         setStartups(response.data)
       } catch (error) {
         console.log(error)
+        setHasError(true)
       } finally {
         setIsLoading(false)
       }
@@ -30,43 +41,75 @@ function ExploreStartupsPage() {
     fetchStartups()
   }, [])
 
+  const filteredStartups = startups.filter((startup) => {
+    const searchText = search.toLowerCase()
+
+    return (
+      startup.name.toLowerCase().includes(searchText) ||
+      startup.industry.toLowerCase().includes(searchText) ||
+      startup.location.toLowerCase().includes(searchText) ||
+      startup.tagline.toLowerCase().includes(searchText)
+    )
+  })
+
   if (isLoading) {
-    return <div className="p-6">Loading startups...</div>
+    return <LoadingSpinner />
+  }
+
+  if (hasError) {
+    return (
+      <div className="mx-auto max-w-6xl p-6">
+        <ErrorState
+          title="Unable to load startups"
+          description="Please try again later."
+        />
+      </div>
+    )
   }
 
   return (
     <div className="mx-auto max-w-6xl space-y-8 p-6">
-      <div className="flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
-        <div>
-          <h1 className="text-4xl font-bold">
-            Explore Startups
-          </h1>
+      <PageHeader
+        title="Explore Startups"
+        subtitle="Discover startups, founders, and opportunities in the ecosystem."
+        action={
+          (user?.role === "ENTREPRENEUR" ||
+            user?.role === "ADMIN") && (
+            <Link to="/startups/create">
+              <Button>
+                Create Startup
+              </Button>
+            </Link>
+          )
+        }
+      />
 
-          <p className="mt-2 text-gray-600">
-            Discover startups, founders, and opportunities
-            in the ecosystem.
-          </p>
+      <Input
+        placeholder="Search startups by name, industry, location, or tagline..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      {startups.length === 0 ? (
+        <EmptyState
+          title="No startups found"
+          description="Startups will appear here once founders create them."
+        />
+      ) : filteredStartups.length === 0 ? (
+        <EmptyState
+          title="No matching startups"
+          description="Try searching with a different name, industry, or location."
+        />
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {filteredStartups.map((startup) => (
+            <StartupCard
+              key={startup._id}
+              startup={startup}
+            />
+          ))}
         </div>
-
-        {(user?.role === "ENTREPRENEUR" ||
-          user?.role === "ADMIN") && (
-          <Link
-            to="/startups/create"
-            className="rounded-xl bg-black px-5 py-3 font-medium text-white transition hover:bg-gray-800"
-          >
-            Create Startup
-          </Link>
-        )}
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {startups.map((startup) => (
-          <StartupCard
-            key={startup._id}
-            startup={startup}
-          />
-        ))}
-      </div>
+      )}
     </div>
   )
 }

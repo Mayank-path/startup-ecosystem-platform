@@ -11,9 +11,10 @@ import {
 
 import { registerUser } from "../api/auth.api"
 
-import Card from "../../../components/ui/Card"
 import Input from "../../../components/ui/Input"
 import Button from "../../../components/ui/Button"
+
+import toast from "react-hot-toast"
 
 const roles = [
   {
@@ -59,94 +60,128 @@ function RegisterForm() {
   const onSubmit = async (data: RegisterSchemaType) => {
     try {
       await registerUser(data)
+
+      toast.success("Account created successfully")
+
       navigate("/login")
     } catch (error: any) {
-      console.log(error.response?.data || error.message)
+      const message =
+        error.response?.data?.message ||
+        "Registration failed"
+
+      toast.error(message)
     }
   }
 
   return (
-    <Card className="w-full max-w-2xl">
-      <h1 className="mb-2 text-center text-3xl font-bold">
-        Create Account
-      </h1>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <div>
+        <Input
+          type="text"
+          placeholder="Name"
+          error={!!errors.name}
+          {...register("name")}
+        />
 
-      <p className="mb-6 text-center text-gray-600">
-        Choose your role and join the startup ecosystem.
-      </p>
+        <p className="mt-1 text-sm text-red-500">
+          {errors.name?.message}
+        </p>
+      </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <div>
-          <Input type="text" placeholder="Name" {...register("name")} />
-          <p className="mt-1 text-sm text-red-500">{errors.name?.message}</p>
-        </div>
+      <div>
+        <Input
+          type="email"
+          placeholder="Email"
+          error={!!errors.email}
+          {...register("email")}
+        />
 
-        <div>
-          <Input type="email" placeholder="Email" {...register("email")} />
-          <p className="mt-1 text-sm text-red-500">{errors.email?.message}</p>
-        </div>
+        <p className="mt-1 text-sm text-red-500">
+          {errors.email?.message}
+        </p>
+      </div>
 
-        <div>
-          <p className="mb-2 text-sm font-medium">I am a</p>
+      <div>
+        <p className="mb-2 text-sm font-medium">
+          I am a
+        </p>
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            {roles.map((role) => {
-              const isSelected = selectedRole === role.value
+        <div className="grid gap-3 sm:grid-cols-2">
+          {roles.map((role) => {
+            const isSelected =
+              selectedRole === role.value
 
-              return (
-                <button
-                  key={role.value}
-                  type="button"
-                  onClick={() => setValue("role", role.value)}
-                  className={`rounded-xl border p-4 text-left transition ${
+            return (
+              <button
+                key={role.value}
+                type="button"
+                onClick={() =>
+                  setValue("role", role.value)
+                }
+                className={`rounded-xl border p-4 text-left transition ${
+                  isSelected
+                    ? "border-black bg-black text-white"
+                    : "bg-white hover:bg-gray-100"
+                }`}
+              >
+                <h3 className="font-semibold">
+                  {role.label}
+                </h3>
+
+                <p
+                  className={`mt-1 text-sm ${
                     isSelected
-                      ? "border-black bg-black text-white"
-                      : "bg-white hover:bg-gray-100"
+                      ? "text-gray-200"
+                      : "text-gray-500"
                   }`}
                 >
-                  <h3 className="font-semibold">{role.label}</h3>
-                  <p
-                    className={`mt-1 text-sm ${
-                      isSelected ? "text-gray-200" : "text-gray-500"
-                    }`}
-                  >
-                    {role.description}
-                  </p>
-                </button>
-              )
-            })}
-          </div>
-
-          <input type="hidden" {...register("role")} />
-
-          <p className="mt-1 text-sm text-red-500">{errors.role?.message}</p>
+                  {role.description}
+                </p>
+              </button>
+            )
+          })}
         </div>
 
-        <div>
-          <Input
-            type="password"
-            placeholder="Password"
-            {...register("password")}
-          />
-          <p className="mt-1 text-sm text-red-500">
-            {errors.password?.message}
-          </p>
-        </div>
+        <input
+          type="hidden"
+          {...register("role")}
+        />
 
-        <div>
-          <Input
-            type="password"
-            placeholder="Confirm Password"
-            {...register("confirmPassword")}
-          />
-          <p className="mt-1 text-sm text-red-500">
-            {errors.confirmPassword?.message}
-          </p>
-        </div>
+        <p className="mt-1 text-sm text-red-500">
+          {errors.role?.message}
+        </p>
+      </div>
 
-        <Button type="submit">Register</Button>
-      </form>
-    </Card>
+      <div>
+        <Input
+          type="password"
+          placeholder="Password"
+          error={!!errors.password}
+          {...register("password")}
+        />
+
+        <p className="mt-1 text-sm text-red-500">
+          {errors.password?.message}
+        </p>
+      </div>
+
+      <div>
+        <Input
+          type="password"
+          placeholder="Confirm Password"
+          error={!!errors.confirmPassword}
+          {...register("confirmPassword")}
+        />
+
+        <p className="mt-1 text-sm text-red-500">
+          {errors.confirmPassword?.message}
+        </p>
+      </div>
+
+      <Button type="submit">
+        Register
+      </Button>
+    </form>
   )
 }
 

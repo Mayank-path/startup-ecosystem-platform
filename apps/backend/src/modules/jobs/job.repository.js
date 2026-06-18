@@ -4,17 +4,67 @@ const createJob = (payload) => {
   return Job.create(payload)
 }
 
-const findJobs = () => {
-  return Job.find({
+const findJobs = async ({
+  page,
+  limit,
+  search,
+  sort,
+}) => {
+  const skip = (page - 1) * limit
+
+  const query = {
     isActive: true,
-  })
+  }
+
+  if (search) {
+    query.$or = [
+      {
+        title: {
+          $regex: search,
+          $options: "i",
+        },
+      },
+      {
+        location: {
+          $regex: search,
+          $options: "i",
+        },
+      },
+    ]
+  }
+
+  let sortOption = {
+    createdAt: -1,
+  }
+
+  if (sort === "oldest") {
+    sortOption = {
+      createdAt: 1,
+    }
+  }
+
+  const jobs = await Job.find(query)
     .populate(
       "startup",
       "name logo tagline"
     )
-    .sort({
-      createdAt: -1,
-    })
+    .sort(sortOption)
+    .skip(skip)
+    .limit(limit)
+
+  const totalJobs =
+    await Job.countDocuments(query)
+
+  const totalPages = Math.ceil(
+    totalJobs / limit
+  )
+
+  return {
+    jobs,
+    currentPage: page,
+    totalPages,
+    totalJobs,
+  }
 }
 
 const findJobById = (id) => {
@@ -23,7 +73,9 @@ const findJobById = (id) => {
   )
 }
 
-const findJobsByStartup = (startupId) => {
+const findJobsByStartup = (
+  startupId
+) => {
   return Job.find({
     startup: startupId,
   }).sort({

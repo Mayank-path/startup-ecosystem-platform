@@ -12,6 +12,8 @@ const applicationRoutes = require(
   "../modules/applications/application.routes"
 )
 
+const dashboardRoutes = require("../modules/dashboard/dashboard.routes")
+
 router.use("/auth", authRoutes)
 
 router.use("/users", usersRoutes)
@@ -24,6 +26,8 @@ router.use(
   "/applications",
   applicationRoutes
 )
+
+router.use("/dashboard", dashboardRoutes)
 
 router.get("/", (req, res) => {
   res.json({

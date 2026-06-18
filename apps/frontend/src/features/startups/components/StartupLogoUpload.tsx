@@ -37,23 +37,32 @@ function StartupLogoUpload({
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-4">
+    <div className="space-y-5">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
         {currentLogo ? (
           <img
             src={currentLogo}
             alt="startup logo"
-            className="h-20 w-20 rounded-2xl object-cover"
+            className="h-24 w-24 rounded-3xl border border-slate-700 object-cover"
           />
         ) : (
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gray-200 text-xl font-bold">
-            Logo
+          <div className="flex h-24 w-24 items-center justify-center rounded-3xl border border-slate-700 bg-[#0F172A] text-sm font-semibold text-[#94A3B8]">
+            No Logo
           </div>
         )}
 
-        <div className="space-y-2">
-          <label className="inline-block cursor-pointer rounded-xl border px-4 py-2 text-sm font-medium hover:bg-gray-100">
+        <div className="flex-1">
+          <h3 className="text-lg font-bold text-[#F8FAFC]">
+            Startup Logo
+          </h3>
+
+          <p className="mt-1 text-sm text-[#94A3B8]">
+            Upload a clear square logo for your startup profile.
+          </p>
+
+          <label className="mt-4 inline-flex cursor-pointer items-center rounded-xl border border-slate-700 bg-[#0F172A] px-4 py-2 text-sm font-medium text-[#F8FAFC] transition hover:border-[#6366F1]">
             Choose Logo
+
             <input
               type="file"
               accept="image/*"
@@ -69,8 +78,8 @@ function StartupLogoUpload({
           </label>
 
           {file && (
-            <p className="max-w-xs truncate text-sm text-gray-500">
-              {file.name}
+            <p className="mt-3 max-w-xs truncate text-sm text-[#94A3B8]">
+              Selected: {file.name}
             </p>
           )}
         </div>
@@ -81,7 +90,7 @@ function StartupLogoUpload({
         disabled={!file || isUploading}
         onClick={handleUpload}
       >
-        {isUploading ? "Uploading..." : "Upload Logo"}
+        {isUploading ? "Uploading..." : "Save Logo"}
       </Button>
     </div>
   )

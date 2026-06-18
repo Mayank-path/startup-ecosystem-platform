@@ -1,5 +1,7 @@
 import { create } from "zustand"
 
+import { persist } from "zustand/middleware"
+
 import type {
   User,
 } from "../types/auth.types"
@@ -27,34 +29,41 @@ interface AuthState {
 }
 
 export const useAuthStore =
-  create<AuthState>((set) => ({
-    user: null,
-
-    accessToken: null,
-
-    isAuthLoading: true,
-
-    setUser: (user) =>
-      set({ user }),
-
-    setAccessToken: (
-      token
-    ) =>
-      set({
-        accessToken: token,
-      }),
-
-    setAuthLoading: (
-      value
-    ) =>
-      set({
-        isAuthLoading: value,
-      }),
-
-    logout: () =>
-      set({
+  create<AuthState>()(
+    persist(
+      (set) => ({
         user: null,
+
         accessToken: null,
+
         isAuthLoading: false,
+
+        setUser: (user) =>
+          set({ user }),
+
+        setAccessToken: (
+          token
+        ) =>
+          set({
+            accessToken: token,
+          }),
+
+        setAuthLoading: (
+          value
+        ) =>
+          set({
+            isAuthLoading: value,
+          }),
+
+        logout: () =>
+          set({
+            user: null,
+            accessToken: null,
+            isAuthLoading: false,
+          }),
       }),
-  }))
+      {
+        name: "auth-storage",
+      }
+    )
+  )

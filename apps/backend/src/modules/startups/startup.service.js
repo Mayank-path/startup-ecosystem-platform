@@ -23,8 +23,16 @@ const createStartup = async (user, payload) => {
   return startup
 }
 
-const getAllStartups = async () => {
-  return startupRepository.findAllStartups()
+const getAllStartups = async ({
+  page,
+  limit,
+  search,
+}) => {
+  return startupRepository.findAllStartups({
+    page,
+    limit,
+    search,
+  })
 }
 
 const getStartupById = async (id) => {

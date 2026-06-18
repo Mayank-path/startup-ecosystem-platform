@@ -1,7 +1,17 @@
 import api from "../../../lib/axios"
 
-export const getStartups = async () => {
-  const response = await api.get("/startups")
+export const getStartups = async (
+  page = 1,
+  limit = 6,
+  search = ""
+) => {
+  const response = await api.get("/startups", {
+    params: {
+      page,
+      limit,
+      search,
+    },
+  })
 
   return response.data
 }

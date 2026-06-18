@@ -20,8 +20,18 @@ const createJob = async (user, payload) => {
   return jobRepository.createJob(payload)
 }
 
-const getJobs = async () => {
-  return jobRepository.findJobs()
+const getJobs = async ({
+  page,
+  limit,
+  search,
+  sort,
+}) => {
+  return jobRepository.findJobs({
+    page,
+    limit,
+    search,
+    sort,
+  })
 }
 
 const getJobById = async (id) => {

@@ -1,33 +1,21 @@
 import { useNavigate } from "react-router-dom"
-
 import { useForm } from "react-hook-form"
-
 import { zodResolver } from "@hookform/resolvers/zod"
+import toast from "react-hot-toast"
 
-import {
-  loginSchema,
-  type LoginSchemaType,
-} from "../schemas/login.schema"
-
+import { loginSchema, type LoginSchemaType } from "../schemas/login.schema"
 import { loginUser } from "../api/auth.api"
-
 import { useAuthStore } from "../store/auth.store"
 
-import Card from "../../../components/ui/Card"
 import Input from "../../../components/ui/Input"
 import Button from "../../../components/ui/Button"
 
 function LoginForm() {
   const navigate = useNavigate()
-
   const setUser = useAuthStore((state) => state.setUser)
   const setAccessToken = useAuthStore((state) => state.setAccessToken)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginSchemaType>({
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
   })
 
@@ -38,46 +26,30 @@ function LoginForm() {
       setUser(response.data.user)
       setAccessToken(response.data.accessToken)
 
+      toast.success("Login successful")
       navigate("/profile")
     } catch (error: any) {
+      const message = error.response?.data?.message || "Invalid credentials"
+
+      toast.error(message)
       console.log(error.response?.data || error.message)
     }
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <h1 className="mb-6 text-center text-3xl font-bold">
-        Login
-      </h1>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <div>
+        <Input type="email" placeholder="Email" error={!!errors.email} {...register("email")} />
+        {errors.email?.message && <p className="mt-1 text-sm text-red-400">{errors.email.message}</p>}
+      </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <div>
-          <Input
-            type="email"
-            placeholder="Email"
-            {...register("email")}
-          />
-          <p className="mt-1 text-sm text-red-500">
-            {errors.email?.message}
-          </p>
-        </div>
+      <div>
+        <Input type="password" placeholder="Password" error={!!errors.password} {...register("password")} />
+        {errors.password?.message && <p className="mt-1 text-sm text-red-400">{errors.password.message}</p>}
+      </div>
 
-        <div>
-          <Input
-            type="password"
-            placeholder="Password"
-            {...register("password")}
-          />
-          <p className="mt-1 text-sm text-red-500">
-            {errors.password?.message}
-          </p>
-        </div>
-
-        <Button type="submit">
-          Login
-        </Button>
-      </form>
-    </Card>
+      <Button type="submit">Login</Button>
+    </form>
   )
 }
 

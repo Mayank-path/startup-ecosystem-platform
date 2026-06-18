@@ -17,7 +17,16 @@ const createStartup = asyncHandler(async (req, res) => {
 })
 
 const getAllStartups = asyncHandler(async (req, res) => {
-  const startups = await startupService.getAllStartups()
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 6
+  const search = req.query.search || ""
+
+  const startups =
+    await startupService.getAllStartups({
+      page,
+      limit,
+      search,
+    })
 
   return ApiResponse.success(
     res,

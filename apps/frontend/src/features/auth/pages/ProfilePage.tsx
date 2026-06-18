@@ -9,8 +9,8 @@ function ProfilePage() {
   const user = useAuthStore((state) => state.user)
 
   return (
-    <div className="min-h-[calc(100vh-73px)] bg-gray-100 p-6">
-      <div className="mx-auto max-w-5xl">
+    <div className="min-h-[calc(100vh-64px)] px-6 py-8">
+      <div className="mx-auto max-w-5xl space-y-6">
         <Card>
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-5">
@@ -18,24 +18,24 @@ function ProfilePage() {
                 <img
                   src={user.avatar}
                   alt="avatar"
-                  className="h-24 w-24 rounded-full object-cover"
+                  className="h-24 w-24 rounded-full border-2 border-slate-700 object-cover"
                 />
               ) : (
-                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-3xl font-bold">
+                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#0F172A] text-3xl font-bold text-[#F8FAFC]">
                   {user?.name?.charAt(0)}
                 </div>
               )}
 
               <div>
-                <h1 className="text-3xl font-bold">
+                <h1 className="text-3xl font-bold text-[#F8FAFC]">
                   {user?.name}
                 </h1>
 
-                <p className="text-gray-600">
+                <p className="mt-1 text-[#94A3B8]">
                   {user?.email}
                 </p>
 
-                <span className="mt-2 inline-block rounded-full bg-black px-3 py-1 text-sm text-white">
+                <span className="mt-3 inline-block rounded-full bg-[#6366F1] px-3 py-1 text-sm font-medium text-white">
                   {user?.role}
                 </span>
               </div>
@@ -45,13 +45,9 @@ function ProfilePage() {
           </div>
         </Card>
 
-        <div className="mt-6">
-          <ProfileDetails />
-        </div>
+        <ProfileDetails />
 
-        <div className="mt-6">
-          <ProfileForm />
-        </div>
+        <ProfileForm />
       </div>
     </div>
   )

@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom"
 
 import App from "../App"
 
+import HomePage from "../pages/HomePage"
 import LoginPage from "../features/auth/pages/LoginPage"
 import RegisterPage from "../features/auth/pages/RegisterPage"
 import ProfilePage from "../features/auth/pages/ProfilePage"
@@ -33,9 +34,15 @@ export const router = createBrowserRouter([
     element: <App />,
 
     children: [
+
       {
         path: "login",
         element: <LoginPage />,
+      },
+
+      {
+        index: true,
+        element: <HomePage />,
       },
 
       {
@@ -80,6 +87,8 @@ export const router = createBrowserRouter([
             path: "profile",
             element: <ProfilePage />,
           },
+
+          
 
           {
             path: "startups/create",

@@ -24,11 +24,13 @@ const getJobs = async ({
   page,
   limit,
   search,
+  sort,
 }) => {
   return jobRepository.findJobs({
     page,
     limit,
     search,
+    sort,
   })
 }
 

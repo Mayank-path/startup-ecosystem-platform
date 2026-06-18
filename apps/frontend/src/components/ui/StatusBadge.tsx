@@ -1,36 +1,20 @@
 interface Props {
-    status: string
+  status: string
+}
+
+function StatusBadge({ status }: Props) {
+  const styles = {
+    PENDING: "border border-yellow-500/30 bg-yellow-500/15 text-yellow-300",
+    REVIEWED: "border border-blue-500/30 bg-blue-500/15 text-blue-300",
+    ACCEPTED: "border border-green-500/30 bg-green-500/15 text-green-300",
+    REJECTED: "border border-red-500/30 bg-red-500/15 text-red-300",
   }
-  
-  function StatusBadge({
-    status,
-  }: Props) {
-    const styles = {
-      PENDING:
-        "bg-yellow-100 text-yellow-700",
-  
-      REVIEWED:
-        "bg-blue-100 text-blue-700",
-  
-      ACCEPTED:
-        "bg-green-100 text-green-700",
-  
-      REJECTED:
-        "bg-red-100 text-red-700",
-    }
-  
-    return (
-      <span
-        className={`rounded-full px-4 py-2 text-sm font-medium ${
-          styles[
-            status as keyof typeof styles
-          ] ||
-          "bg-gray-100 text-gray-700"
-        }`}
-      >
-        {status}
-      </span>
-    )
-  }
-  
-  export default StatusBadge
+
+  return (
+    <span className={`inline-flex rounded-full px-4 py-2 text-sm font-medium ${styles[status as keyof typeof styles] || "border border-slate-700 bg-[#1E293B] text-[#94A3B8]"}`}>
+      {status}
+    </span>
+  )
+}
+
+export default StatusBadge

@@ -12,14 +12,14 @@ function Input({
   return (
     <input
       disabled={disabled}
-      className={`w-full rounded-xl border px-4 py-3 text-sm transition outline-none ${
+      className={`w-full rounded-xl border bg-[#1E293B] px-4 py-3 text-sm text-[#F8FAFC] outline-none transition placeholder:text-[#94A3B8] ${
         error
-          ? "border-red-500 focus:ring-2 focus:ring-red-200"
-          : "border-gray-300 focus:border-black focus:ring-2 focus:ring-black/10"
+          ? "border-red-500 focus:ring-2 focus:ring-red-500/30"
+          : "border-slate-700 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/30"
       } ${
         disabled
-          ? "cursor-not-allowed bg-gray-100 opacity-60"
-          : "bg-white"
+          ? "cursor-not-allowed opacity-60"
+          : ""
       } ${className}`}
       {...props}
     />

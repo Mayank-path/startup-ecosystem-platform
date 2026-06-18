@@ -11,7 +11,7 @@ interface Props {
 function JobCard({ job }: Props) {
   return (
     <Link to={`/jobs/${job._id}`}>
-      <Card className="h-full transition hover:-translate-y-1 hover:shadow-md">
+      <Card className="h-full transition hover:-translate-y-1 hover:border-[#6366F1]">
         <div className="flex items-start gap-4">
           {job.startup.logo ? (
             <img
@@ -20,23 +20,23 @@ function JobCard({ job }: Props) {
               className="h-14 w-14 rounded-2xl object-cover"
             />
           ) : (
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-200 text-xl font-bold">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0F172A] text-lg font-bold text-[#F8FAFC]">
               {job.startup.name.charAt(0)}
             </div>
           )}
 
           <div className="min-w-0 flex-1">
-            <h2 className="truncate text-xl font-bold">
+            <h2 className="truncate text-xl font-bold text-[#F8FAFC]">
               {job.title}
             </h2>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-[#94A3B8]">
               {job.startup.name}
             </p>
           </div>
         </div>
 
-        <p className="mt-4 line-clamp-3 text-sm text-gray-600">
+        <p className="mt-4 line-clamp-3 text-sm leading-7 text-[#94A3B8]">
           {job.description}
         </p>
 
@@ -44,7 +44,7 @@ function JobCard({ job }: Props) {
           {job.skillsRequired.map((skill) => (
             <span
               key={skill}
-              className="rounded-full bg-gray-100 px-3 py-1 text-xs"
+              className="rounded-full border border-slate-700 bg-[#0F172A] px-3 py-1 text-xs font-medium text-[#94A3B8]"
             >
               {skill}
             </span>
@@ -52,17 +52,17 @@ function JobCard({ job }: Props) {
         </div>
 
         <div className="mt-5 flex items-center justify-between text-sm">
-          <span className="font-medium text-gray-700">
+          <span className="font-medium text-[#6366F1]">
             {job.roleType.replace("_", " ")}
           </span>
 
-          <span className="text-gray-500">
+          <span className="text-[#94A3B8]">
             {job.location}
           </span>
         </div>
 
         {job.salary && (
-          <p className="mt-3 text-sm font-semibold text-green-600">
+          <p className="mt-3 text-sm font-semibold text-[#F59E0B]">
             {job.salary}
           </p>
         )}

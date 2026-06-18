@@ -20,7 +20,6 @@ function MyApplicationsPage() {
     const fetchApplications = async () => {
       try {
         const response = await getMyApplications()
-
         setApplications(response.data)
       } catch (error) {
         console.log(error)
@@ -33,53 +32,33 @@ function MyApplicationsPage() {
     fetchApplications()
   }, [])
 
-  if (isLoading) {
-    return <LoadingSpinner />
-  }
+  if (isLoading) return <LoadingSpinner />
 
   if (hasError) {
     return (
-      <div className="mx-auto max-w-5xl p-6">
-        <ErrorState
-          title="Unable to load applications"
-          description="Please try again later."
-        />
+      <div className="mx-auto max-w-5xl px-6 py-8">
+        <ErrorState title="Unable to load applications" description="Please try again later." />
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 p-6">
-      <PageHeader
-        title="My Applications"
-        subtitle="Track your startup job applications."
-      />
+    <div className="mx-auto max-w-5xl space-y-8 px-6 py-8">
+      <PageHeader title="My Applications" subtitle="Track your startup job applications." />
 
       {applications.length === 0 ? (
-        <EmptyState
-          title="No applications yet"
-          description="Start applying to jobs to track your applications here."
-        />
+        <EmptyState title="No applications yet" description="Start applying to jobs to track your applications here." />
       ) : (
-        <div className="space-y-5">
+        <div className="space-y-6">
           {applications.map((application) => {
             if (!application.job) {
               return (
-                <Card key={application._id}>
+                <Card key={application._id} className="transition hover:-translate-y-1 hover:border-[#6366F1]">
                   <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
-                      <h2 className="text-2xl font-bold">
-                        Job no longer available
-                      </h2>
-
-                      <p className="mt-2 text-gray-600">
-                        This job may have been deleted by the startup.
-                      </p>
-
-                      <p className="mt-3 text-sm text-gray-500">
-                        Applied on{" "}
-                        {new Date(application.createdAt).toLocaleDateString()}
-                      </p>
+                      <h2 className="text-2xl font-bold text-[#F8FAFC]">Job no longer available</h2>
+                      <p className="mt-2 text-[#94A3B8]">This job may have been deleted by the startup.</p>
+                      <p className="mt-3 text-sm text-[#94A3B8]">Applied on {new Date(application.createdAt).toLocaleDateString()}</p>
                     </div>
 
                     <StatusBadge status={application.status} />
@@ -89,34 +68,21 @@ function MyApplicationsPage() {
             }
 
             return (
-              <Card key={application._id}>
+              <Card key={application._id} className="transition hover:-translate-y-1 hover:border-[#6366F1]">
                 <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
                   <div className="flex items-start gap-4">
                     {application.job.startup.logo ? (
-                      <img
-                        src={application.job.startup.logo}
-                        alt={application.job.startup.name}
-                        className="h-16 w-16 rounded-2xl object-cover"
-                      />
+                      <img src={application.job.startup.logo} alt={application.job.startup.name} className="h-16 w-16 rounded-2xl object-cover" />
                     ) : (
-                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-200 text-xl font-bold">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#0F172A] text-xl font-bold text-[#F8FAFC]">
                         {application.job.startup.name.charAt(0)}
                       </div>
                     )}
 
                     <div>
-                      <h2 className="text-2xl font-bold">
-                        {application.job.title}
-                      </h2>
-
-                      <p className="mt-1 text-gray-600">
-                        {application.job.startup.name}
-                      </p>
-
-                      <p className="mt-3 text-sm text-gray-500">
-                        Applied on{" "}
-                        {new Date(application.createdAt).toLocaleDateString()}
-                      </p>
+                      <h2 className="text-2xl font-bold text-[#F8FAFC]">{application.job.title}</h2>
+                      <p className="mt-1 text-[#94A3B8]">{application.job.startup.name}</p>
+                      <p className="mt-3 text-sm text-[#94A3B8]">Applied on {new Date(application.createdAt).toLocaleDateString()}</p>
                     </div>
                   </div>
 
@@ -124,10 +90,8 @@ function MyApplicationsPage() {
                 </div>
 
                 {application.coverLetter && (
-                  <div className="mt-5 rounded-xl bg-gray-50 p-4">
-                    <p className="text-sm text-gray-700">
-                      {application.coverLetter}
-                    </p>
+                  <div className="mt-5 rounded-xl border border-slate-700 bg-[#0F172A] p-4">
+                    <p className="text-sm leading-7 text-[#94A3B8]">{application.coverLetter}</p>
                   </div>
                 )}
               </Card>

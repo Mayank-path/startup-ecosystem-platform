@@ -4,9 +4,7 @@ import Card from "../../../components/ui/Card"
 import Button from "../../../components/ui/Button"
 import StatusBadge from "../../../components/ui/StatusBadge"
 
-import {
-  updateApplicationStatus,
-} from "../api/application.api"
+import { updateApplicationStatus } from "../api/application.api"
 
 import type { Applicant } from "../types/applicant.types"
 
@@ -14,70 +12,55 @@ interface Props {
   applicant: Applicant
 }
 
-function ApplicantCard({
-  applicant,
-}: Props) {
-  const [status, setStatus] =
-    useState(applicant.status)
+function ApplicantCard({ applicant }: Props) {
+  const [status, setStatus] = useState(applicant.status)
+  const [isUpdating, setIsUpdating] = useState(false)
 
-  const [isUpdating, setIsUpdating] =
-    useState(false)
+  const handleUpdateStatus = async (
+    newStatus: "ACCEPTED" | "REJECTED" | "REVIEWED"
+  ) => {
+    try {
+      setIsUpdating(true)
 
-  const handleUpdateStatus =
-    async (
-      newStatus:
-        | "ACCEPTED"
-        | "REJECTED"
-        | "REVIEWED"
-    ) => {
-      try {
-        setIsUpdating(true)
+      await updateApplicationStatus(
+        applicant._id,
+        newStatus
+      )
 
-        await updateApplicationStatus(
-          applicant._id,
-          newStatus
-        )
-
-        setStatus(newStatus)
-      } catch (error) {
-        console.log(error)
-      } finally {
-        setIsUpdating(false)
-      }
+      setStatus(newStatus)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsUpdating(false)
     }
+  }
 
   return (
-    <Card>
+    <Card className="transition hover:-translate-y-1 hover:border-[#6366F1]">
       <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
         <div className="flex items-start gap-4">
           {applicant.student.avatar ? (
             <img
-              src={
-                applicant.student.avatar
-              }
-              alt={
-                applicant.student.name
-              }
+              src={applicant.student.avatar}
+              alt={applicant.student.name}
               className="h-16 w-16 rounded-2xl object-cover"
             />
           ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-200 text-xl font-bold">
-              {applicant.student.name.charAt(
-                0
-              )}
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#0F172A] text-xl font-bold text-[#F8FAFC]">
+              {applicant.student.name.charAt(0)}
             </div>
           )}
 
           <div>
-            <h2 className="text-2xl font-bold">
+            <h2 className="text-2xl font-bold text-[#F8FAFC]">
               {applicant.student.name}
             </h2>
 
-            <p className="mt-1 text-gray-600">
+            <p className="mt-1 text-[#94A3B8]">
               {applicant.student.email}
             </p>
 
-            <p className="mt-3 text-sm text-gray-500">
+            <p className="mt-3 text-sm text-[#94A3B8]">
               Applied on{" "}
               {new Date(
                 applicant.createdAt
@@ -86,14 +69,12 @@ function ApplicantCard({
           </div>
         </div>
 
-        <StatusBadge
-          status={status}
-        />
+        <StatusBadge status={status} />
       </div>
 
       {applicant.coverLetter && (
-        <div className="mt-5 rounded-xl bg-gray-50 p-4">
-          <p className="text-sm leading-7 text-gray-700">
+        <div className="mt-5 rounded-xl border border-slate-700 bg-[#0F172A] p-4">
+          <p className="text-sm leading-7 text-[#94A3B8]">
             {applicant.coverLetter}
           </p>
         </div>
@@ -115,9 +96,7 @@ function ApplicantCard({
         <Button
           disabled={isUpdating}
           onClick={() =>
-            handleUpdateStatus(
-              "REVIEWED"
-            )
+            handleUpdateStatus("REVIEWED")
           }
         >
           Mark Reviewed
@@ -126,9 +105,7 @@ function ApplicantCard({
         <Button
           disabled={isUpdating}
           onClick={() =>
-            handleUpdateStatus(
-              "ACCEPTED"
-            )
+            handleUpdateStatus("ACCEPTED")
           }
           className="bg-green-600 hover:bg-green-700"
         >
@@ -139,9 +116,7 @@ function ApplicantCard({
           disabled={isUpdating}
           variant="danger"
           onClick={() =>
-            handleUpdateStatus(
-              "REJECTED"
-            )
+            handleUpdateStatus("REJECTED")
           }
         >
           Reject

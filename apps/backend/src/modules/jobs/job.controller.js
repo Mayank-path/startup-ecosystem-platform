@@ -21,11 +21,13 @@ const getJobs = asyncHandler(async (req, res) => {
   const page = Number(req.query.page) || 1
   const limit = Number(req.query.limit) || 6
   const search = req.query.search || ""
+  const sort = req.query.sort || "newest"
 
   const result = await jobService.getJobs({
     page,
     limit,
     search,
+    sort,
   })
 
   return ApiResponse.success(

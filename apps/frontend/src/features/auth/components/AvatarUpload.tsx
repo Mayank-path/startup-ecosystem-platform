@@ -29,7 +29,7 @@ function AvatarUpload() {
   return (
     <div className="flex flex-col items-start gap-2">
       <div className="flex gap-3">
-        <label className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-100">
+        <label className="cursor-pointer rounded-lg border border-slate-700 bg-[#1E293B] px-4 py-2 text-sm font-medium text-[#F8FAFC] transition hover:border-[#6366F1] hover:text-[#6366F1]">
           Change photo
           <input
             type="file"
@@ -46,17 +46,13 @@ function AvatarUpload() {
           type="button"
           onClick={handleUpload}
           disabled={!file || isUploading}
-          className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-gray-300"
+          className="rounded-lg bg-[#6366F1] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#4F46E5] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isUploading ? "Uploading..." : "Save"}
         </button>
       </div>
 
-      {file && (
-        <p className="max-w-xs truncate text-sm text-gray-500">
-          {file.name}
-        </p>
-      )}
+      {file && <p className="max-w-xs truncate text-sm text-[#94A3B8]">{file.name}</p>}
     </div>
   )
 }

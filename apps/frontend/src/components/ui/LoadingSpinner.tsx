@@ -1,9 +1,9 @@
 function LoadingSpinner() {
-    return (
-      <div className="flex items-center justify-center py-10">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-black" />
-      </div>
-    )
-  }
-  
-  export default LoadingSpinner
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-[#0F172A]">
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-700 border-t-[#6366F1]" />
+    </div>
+  )
+}
+
+export default LoadingSpinner

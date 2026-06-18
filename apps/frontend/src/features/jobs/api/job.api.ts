@@ -3,13 +3,15 @@ import api from "../../../lib/axios"
 export const getJobs = async (
   page = 1,
   limit = 6,
-  search = ""
+  search = "",
+  sort="newest"
 ) => {
   const response = await api.get("/jobs", {
     params: {
       page,
       limit,
       search,
+      sort,
     },
   })
 

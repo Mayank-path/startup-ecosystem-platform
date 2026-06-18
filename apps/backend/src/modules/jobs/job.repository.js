@@ -8,6 +8,7 @@ const findJobs = async ({
   page,
   limit,
   search,
+  sort,
 }) => {
   const skip = (page - 1) * limit
 
@@ -32,14 +33,22 @@ const findJobs = async ({
     ]
   }
 
+  let sortOption = {
+    createdAt: -1,
+  }
+
+  if (sort === "oldest") {
+    sortOption = {
+      createdAt: 1,
+    }
+  }
+
   const jobs = await Job.find(query)
     .populate(
       "startup",
       "name logo tagline"
     )
-    .sort({
-      createdAt: -1,
-    })
+    .sort(sortOption)
     .skip(skip)
     .limit(limit)
 

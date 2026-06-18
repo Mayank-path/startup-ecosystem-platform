@@ -56,19 +56,19 @@ function ApplicantsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 p-6">
+    <div className="mx-auto max-w-5xl space-y-8 px-6 py-8">
       <PageHeader
         title="Applicants"
         subtitle="Review applicants for this job."
       />
-
+  
       {applicants.length === 0 ? (
         <EmptyState
           title="No applicants yet"
           description="Applicants will appear here once students apply for this job."
         />
       ) : (
-        <div className="space-y-5">
+        <div className="space-y-6">
           {applicants.map((applicant) => (
             <ApplicantCard
               key={applicant._id}

@@ -3,7 +3,6 @@ import { useState } from "react"
 import { updateProfile } from "../api/auth.api"
 import { useAuthStore } from "../store/auth.store"
 
-import Card from "../../../components/ui/Card"
 import Input from "../../../components/ui/Input"
 import Button from "../../../components/ui/Button"
 
@@ -34,62 +33,123 @@ function ProfileForm() {
         college,
         github,
         linkedin,
-        skills: skills.split(",").map((skill) => skill.trim()).filter(Boolean),
+        skills: skills
+          .split(",")
+          .map((skill) => skill.trim())
+          .filter(Boolean),
       })
 
       setUser(response.data)
-      setSuccessMessage("Profile updated successfully")
+      setSuccessMessage("Saved your profile changes.")
     } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Something went wrong")
+      setErrorMessage(error.response?.data?.message || "Could not update profile.")
     } finally {
       setIsUpdating(false)
     }
   }
 
   return (
-    <Card>
-      <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <h2 className="text-2xl font-bold text-[#F8FAFC]">Edit Profile</h2>
+    <section className="rounded-[2rem] border border-slate-700 bg-[#1E293B]/70 p-6">
+      <div className="mb-6">
+        <h2 className="text-2xl font-black text-[#F8FAFC]">
+          Edit Profile
+        </h2>
 
-        <div>
-          {successMessage && <p className="text-sm font-medium text-green-400">{successMessage}</p>}
-          {errorMessage && <p className="text-sm font-medium text-red-400">{errorMessage}</p>}
-        </div>
+        <p className="mt-2 text-sm leading-6 text-[#94A3B8]">
+          Update the information people see when they visit your profile.
+        </p>
+
+        {successMessage && (
+          <p className="mt-4 rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm font-medium text-green-400">
+            {successMessage}
+          </p>
+        )}
+
+        {errorMessage && (
+          <p className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-400">
+            {errorMessage}
+          </p>
+        )}
       </div>
 
-      <form onSubmit={handleSubmit} className="grid gap-5 md:grid-cols-2">
-        <div className="md:col-span-2">
-          <label className="mb-1 block text-sm font-medium text-[#F8FAFC]">Bio</label>
-          <Input value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Tell us about yourself" />
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-[#F8FAFC]">
+            Bio
+          </label>
+
+          <Input
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            placeholder="Full-stack developer interested in startups and product building"
+          />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-[#F8FAFC]">College</label>
-          <Input value={college} onChange={(e) => setCollege(e.target.value)} placeholder="College name" />
+          <label className="mb-2 block text-sm font-semibold text-[#F8FAFC]">
+            College
+          </label>
+
+          <Input
+            value={college}
+            onChange={(e) => setCollege(e.target.value)}
+            placeholder="Lovely Professional University"
+          />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-[#F8FAFC]">Skills</label>
-          <Input value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="React, Node.js, MongoDB" />
+          <label className="mb-2 block text-sm font-semibold text-[#F8FAFC]">
+            Skills
+          </label>
+
+          <Input
+            value={skills}
+            onChange={(e) => setSkills(e.target.value)}
+            placeholder="React, Node.js, MongoDB"
+          />
+
+          <p className="mt-2 text-xs text-[#94A3B8]">
+            Use commas between skills, for example: React, Node.js, MongoDB.
+          </p>
         </div>
 
-        <div>
-          <label className="mb-1 block text-sm font-medium text-[#F8FAFC]">GitHub</label>
-          <Input value={github} onChange={(e) => setGithub(e.target.value)} placeholder="https://github.com/username" />
+        <div className="grid gap-5 md:grid-cols-2">
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-[#F8FAFC]">
+              GitHub
+            </label>
+
+            <Input
+              value={github}
+              onChange={(e) => setGithub(e.target.value)}
+              placeholder="https://github.com/username"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-[#F8FAFC]">
+              LinkedIn
+            </label>
+
+            <Input
+              value={linkedin}
+              onChange={(e) => setLinkedin(e.target.value)}
+              placeholder="https://linkedin.com/in/username"
+            />
+          </div>
         </div>
 
-        <div>
-          <label className="mb-1 block text-sm font-medium text-[#F8FAFC]">LinkedIn</label>
-          <Input value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="https://linkedin.com/in/username" />
-        </div>
-
-        <div className="md:col-span-2">
-          <Button type="submit" disabled={isUpdating} className="w-full">
-            {isUpdating ? "Updating..." : "Update Profile"}
+        <div className="pt-2">
+          <Button
+            type="submit"
+            disabled={isUpdating}
+            className="w-full rounded-xl py-3 font-semibold"
+          >
+            {isUpdating ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </form>
-    </Card>
+    </section>
   )
 }
 

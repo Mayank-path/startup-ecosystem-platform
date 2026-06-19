@@ -1,35 +1,98 @@
-import { Briefcase, ExternalLink, Globe, ShieldCheck } from "lucide-react"
+import {
+  Briefcase,
+  ExternalLink,
+  Globe,
+  ShieldCheck,
+} from "lucide-react"
 import { useAuthStore } from "../store/auth.store"
 
 function ProfileDetails() {
   const user = useAuthStore((state) => state.user)
 
+  const roleContent = {
+    STUDENT: {
+      title: "Student Profile",
+      subtitle:
+        "Show startups your skills, projects, and interests.",
+      organizationLabel: "College",
+      skillsLabel: "Skills",
+    },
+
+    ENTREPRENEUR: {
+      title: "Founder Profile",
+      subtitle:
+        "Introduce yourself and the experience behind your startup.",
+      organizationLabel: "Organization",
+      skillsLabel: "Expertise",
+    },
+
+    INVESTOR: {
+      title: "Investor Profile",
+      subtitle:
+        "Share your interests and areas of focus.",
+      organizationLabel: "Organization",
+      skillsLabel: "Investment Interests",
+    },
+
+    FREELANCER: {
+      title: "Freelancer Profile",
+      subtitle:
+        "Highlight the services and skills you offer.",
+      organizationLabel: "Organization",
+      skillsLabel: "Services & Skills",
+    },
+
+    ADMIN: {
+      title: "Admin Profile",
+      subtitle:
+        "Platform administrator information.",
+      organizationLabel: "Organization",
+      skillsLabel: "Areas",
+    },
+  }
+
+  const content =
+    roleContent[
+      user?.role as keyof typeof roleContent
+    ] || roleContent.STUDENT
+
   return (
     <section className="rounded-[2rem] border border-slate-700 bg-[#1E293B]/70 p-6">
       <div className="mb-6">
-        <h2 className="text-2xl font-black text-[#F8FAFC]">About</h2>
+        <h2 className="text-2xl font-black text-[#F8FAFC]">
+          {content.title}
+        </h2>
+
         <p className="mt-2 text-sm leading-6 text-[#94A3B8]">
-          A quick overview of your profile information.
+          {content.subtitle}
         </p>
       </div>
 
       <div className="space-y-7">
         <div>
-          <p className="text-sm font-semibold text-[#94A3B8]">Bio</p>
+          <p className="text-sm font-semibold text-[#94A3B8]">
+            Bio
+          </p>
+
           <p className="mt-2 leading-7 text-[#F8FAFC]">
             {user?.bio || "No bio added yet."}
           </p>
         </div>
 
         <div>
-          <p className="text-sm font-semibold text-[#94A3B8]">College</p>
+          <p className="text-sm font-semibold text-[#94A3B8]">
+            {content.organizationLabel}
+          </p>
+
           <p className="mt-2 text-[#F8FAFC]">
-            {user?.college || "College not added yet."}
+            {user?.college || "Not added yet."}
           </p>
         </div>
 
         <div>
-          <p className="text-sm font-semibold text-[#94A3B8]">Skills</p>
+          <p className="text-sm font-semibold text-[#94A3B8]">
+            {content.skillsLabel}
+          </p>
 
           {user?.skills?.length ? (
             <div className="mt-3 flex flex-wrap gap-2">
@@ -43,12 +106,16 @@ function ProfileDetails() {
               ))}
             </div>
           ) : (
-            <p className="mt-2 text-[#F8FAFC]">No skills added yet.</p>
+            <p className="mt-2 text-[#F8FAFC]">
+              No information added yet.
+            </p>
           )}
         </div>
 
         <div className="border-t border-slate-700 pt-6">
-          <h3 className="mb-4 text-lg font-bold text-[#F8FAFC]">Links</h3>
+          <h3 className="mb-4 text-lg font-bold text-[#F8FAFC]">
+            Links
+          </h3>
 
           <div className="space-y-3">
             {user?.github ? (
@@ -59,15 +126,24 @@ function ProfileDetails() {
                 className="flex items-center justify-between gap-4 rounded-2xl border border-slate-700 bg-[#0F172A] px-4 py-3 text-[#CBD5E1] transition hover:border-[#6366F1] hover:text-[#F8FAFC]"
               >
                 <span className="flex min-w-0 items-center gap-3">
-                  <Globe size={18} className="shrink-0 text-[#A5B4FC]" />
-                  <span className="truncate">{user.github}</span>
+                  <Globe
+                    size={18}
+                    className="shrink-0 text-[#A5B4FC]"
+                  />
+
+                  <span className="truncate">
+                    {user.github}
+                  </span>
                 </span>
 
-                <ExternalLink size={16} className="shrink-0 text-[#94A3B8]" />
+                <ExternalLink
+                  size={16}
+                  className="shrink-0 text-[#94A3B8]"
+                />
               </a>
             ) : (
               <p className="rounded-2xl border border-dashed border-slate-700 px-4 py-3 text-[#94A3B8]">
-                GitHub not added yet.
+                GitHub / Portfolio not added yet.
               </p>
             )}
 
@@ -79,11 +155,20 @@ function ProfileDetails() {
                 className="flex items-center justify-between gap-4 rounded-2xl border border-slate-700 bg-[#0F172A] px-4 py-3 text-[#CBD5E1] transition hover:border-[#6366F1] hover:text-[#F8FAFC]"
               >
                 <span className="flex min-w-0 items-center gap-3">
-                  <Briefcase size={18} className="shrink-0 text-[#A5B4FC]" />
-                  <span className="truncate">{user.linkedin}</span>
+                  <Briefcase
+                    size={18}
+                    className="shrink-0 text-[#A5B4FC]"
+                  />
+
+                  <span className="truncate">
+                    {user.linkedin}
+                  </span>
                 </span>
 
-                <ExternalLink size={16} className="shrink-0 text-[#94A3B8]" />
+                <ExternalLink
+                  size={16}
+                  className="shrink-0 text-[#94A3B8]"
+                />
               </a>
             ) : (
               <p className="rounded-2xl border border-dashed border-slate-700 px-4 py-3 text-[#94A3B8]">
@@ -95,12 +180,16 @@ function ProfileDetails() {
 
         <div className="flex items-center justify-between gap-4 rounded-2xl bg-[#0F172A] p-4">
           <div className="flex items-center gap-3">
-            <ShieldCheck size={20} className="text-[#6366F1]" />
+            <ShieldCheck
+              size={20}
+              className="text-[#6366F1]"
+            />
 
             <div>
               <p className="font-semibold text-[#F8FAFC]">
                 Account verification
               </p>
+
               <p className="mt-1 text-sm text-[#94A3B8]">
                 Verification helps build trust on the platform.
               </p>
@@ -114,7 +203,9 @@ function ProfileDetails() {
                 : "bg-yellow-500/10 text-yellow-400"
             }`}
           >
-            {user?.isVerified ? "Verified" : "Pending"}
+            {user?.isVerified
+              ? "Verified"
+              : "Pending"}
           </span>
         </div>
       </div>

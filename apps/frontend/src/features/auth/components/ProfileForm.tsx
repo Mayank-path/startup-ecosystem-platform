@@ -6,9 +6,57 @@ import { useAuthStore } from "../store/auth.store"
 import Input from "../../../components/ui/Input"
 import Button from "../../../components/ui/Button"
 
+const roleContent = {
+  STUDENT: {
+    title: "Edit Student Profile",
+    description:
+      "Add your college, skills, and links so startups can understand your background.",
+    bioPlaceholder:
+      "Computer science student interested in full-stack development and startup internships",
+    skillsPlaceholder: "React, Node.js, MongoDB, DSA",
+  },
+
+  ENTREPRENEUR: {
+    title: "Edit Founder Profile",
+    description:
+      "Tell people what you build and what kind of talent you are looking for.",
+    bioPlaceholder:
+      "Founder building an edtech startup and hiring students for frontend/backend roles",
+    skillsPlaceholder: "Product, Hiring, React, Marketing",
+  },
+
+  INVESTOR: {
+    title: "Edit Investor Profile",
+    description:
+      "Share your investment interests so startups understand your focus.",
+    bioPlaceholder:
+      "Interested in early-stage SaaS, edtech, and AI startups",
+    skillsPlaceholder: "SaaS, EdTech, AI, Angel Investing",
+  },
+
+  FREELANCER: {
+    title: "Edit Freelancer Profile",
+    description:
+      "Show your services, skills, and work links for startup collaborations.",
+    bioPlaceholder:
+      "Freelance frontend developer helping startups build landing pages and dashboards",
+    skillsPlaceholder: "React, Tailwind, UI Design, API Integration",
+  },
+
+  ADMIN: {
+    title: "Edit Admin Profile",
+    description: "Manage your platform profile.",
+    bioPlaceholder: "Platform administrator",
+    skillsPlaceholder: "Management, Review, Operations",
+  },
+}
+
 function ProfileForm() {
   const user = useAuthStore((state) => state.user)
   const setUser = useAuthStore((state) => state.setUser)
+
+  const content =
+    roleContent[user?.role as keyof typeof roleContent] || roleContent.STUDENT
 
   const [bio, setBio] = useState(user?.bio || "")
   const [college, setCollege] = useState(user?.college || "")
@@ -42,7 +90,9 @@ function ProfileForm() {
       setUser(response.data)
       setSuccessMessage("Saved your profile changes.")
     } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Could not update profile.")
+      setErrorMessage(
+        error.response?.data?.message || "Could not update profile."
+      )
     } finally {
       setIsUpdating(false)
     }
@@ -52,11 +102,11 @@ function ProfileForm() {
     <section className="rounded-[2rem] border border-slate-700 bg-[#1E293B]/70 p-6">
       <div className="mb-6">
         <h2 className="text-2xl font-black text-[#F8FAFC]">
-          Edit Profile
+          {content.title}
         </h2>
 
         <p className="mt-2 text-sm leading-6 text-[#94A3B8]">
-          Update the information people see when they visit your profile.
+          {content.description}
         </p>
 
         {successMessage && (
@@ -81,13 +131,13 @@ function ProfileForm() {
           <Input
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            placeholder="Full-stack developer interested in startups and product building"
+            placeholder={content.bioPlaceholder}
           />
         </div>
 
         <div>
           <label className="mb-2 block text-sm font-semibold text-[#F8FAFC]">
-            College
+            College / Organization
           </label>
 
           <Input
@@ -99,24 +149,24 @@ function ProfileForm() {
 
         <div>
           <label className="mb-2 block text-sm font-semibold text-[#F8FAFC]">
-            Skills
+            Skills / Interests
           </label>
 
           <Input
             value={skills}
             onChange={(e) => setSkills(e.target.value)}
-            placeholder="React, Node.js, MongoDB"
+            placeholder={content.skillsPlaceholder}
           />
 
           <p className="mt-2 text-xs text-[#94A3B8]">
-            Use commas between skills, for example: React, Node.js, MongoDB.
+            Use commas between items, for example: React, Node.js, MongoDB.
           </p>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2">
           <div>
             <label className="mb-2 block text-sm font-semibold text-[#F8FAFC]">
-              GitHub
+              GitHub / Portfolio
             </label>
 
             <Input

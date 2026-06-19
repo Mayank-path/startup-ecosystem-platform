@@ -8,6 +8,8 @@ const startupRoutes = require("../modules/startups/startup.routes")
 
 const jobRoutes = require("../modules/jobs/job.routes")
 
+const investorRoutes = require("../modules/investors/investor-watchlist.routes")
+
 const applicationRoutes = require(
   "../modules/applications/application.routes"
 )
@@ -21,6 +23,8 @@ router.use("/users", usersRoutes)
 router.use("/startups", startupRoutes)
 
 router.use("/jobs", jobRoutes)
+
+router.use("/investors", investorRoutes)
 
 router.use(
   "/applications",

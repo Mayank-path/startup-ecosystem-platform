@@ -3,15 +3,16 @@ import { createBrowserRouter } from "react-router-dom"
 import App from "../App"
 
 import HomePage from "../pages/HomePage"
-import LoginPage from "../features/auth/pages/LoginPage"
-import RegisterPage from "../features/auth/pages/RegisterPage"
-import ProfilePage from "../features/auth/pages/ProfilePage"
+import DashboardPage from "../pages/DashboardPage"
+
+import DashboardLayout from "../layouts/DashboardLayout"
 
 import ProtectedRoute from "./ProtectedRoute"
 import RoleProtectedRoute from "./RoleProtectedRoute"
 
-import DashboardLayout from "../layouts/DashboardLayout"
-import DashboardPage from "../pages/DashboardPage"
+import LoginPage from "../features/auth/pages/LoginPage"
+import RegisterPage from "../features/auth/pages/RegisterPage"
+import ProfilePage from "../features/auth/pages/ProfilePage"
 
 import ExploreStartupsPage from "../features/startups/pages/ExploreStartupsPage"
 import StartupDetailsPage from "../features/startups/pages/StartupDetailsPage"
@@ -28,68 +29,64 @@ import EditJobPage from "../features/jobs/pages/EditJobPage"
 import MyApplicationsPage from "../features/applications/pages/MyApplicationsPage"
 import ApplicantsPage from "../features/applications/pages/ApplicantsPage"
 
+import InvestorWatchlistPage from "../features/investors/pages/InvestorWatchListPage"
+
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-
     children: [
-
-      {
-        path: "login",
-        element: <LoginPage />,
-      },
-
       {
         index: true,
         element: <HomePage />,
       },
-
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
       {
         path: "register",
         element: <RegisterPage />,
       },
-
       {
         path: "startups",
         element: <ExploreStartupsPage />,
       },
-
       {
         path: "startups/:id",
         element: <StartupDetailsPage />,
       },
-
       {
         path: "jobs",
         element: <ExploreJobsPage />,
       },
-
       {
         path: "jobs/:id",
         element: <JobDetailsPage />,
       },
-
       {
         element: (
           <ProtectedRoute>
             <DashboardLayout />
           </ProtectedRoute>
         ),
-
         children: [
           {
             path: "dashboard",
             element: <DashboardPage />,
           },
-
           {
             path: "profile",
             element: <ProfilePage />,
           },
-
-          
-
+          {
+            path: "investors/watchlist",
+            element: (
+              <RoleProtectedRoute allowedRoles={["INVESTOR"]}>
+                <InvestorWatchlistPage />
+              </RoleProtectedRoute>
+            ),
+          },
           {
             path: "startups/create",
             element: (
@@ -98,7 +95,6 @@ export const router = createBrowserRouter([
               </RoleProtectedRoute>
             ),
           },
-
           {
             path: "my-startups",
             element: (
@@ -126,12 +122,7 @@ export const router = createBrowserRouter([
           {
             path: "jobs/:jobId/applicants",
             element: (
-              <RoleProtectedRoute
-                allowedRoles={[
-                  "ENTREPRENEUR",
-                  "ADMIN",
-                ]}
-              >
+              <RoleProtectedRoute allowedRoles={["ENTREPRENEUR", "ADMIN"]}>
                 <ApplicantsPage />
               </RoleProtectedRoute>
             ),
@@ -139,12 +130,7 @@ export const router = createBrowserRouter([
           {
             path: "startups/:startupId/jobs",
             element: (
-              <RoleProtectedRoute
-                allowedRoles={[
-                  "ENTREPRENEUR",
-                  "ADMIN",
-                ]}
-              >
+              <RoleProtectedRoute allowedRoles={["ENTREPRENEUR", "ADMIN"]}>
                 <StartupJobsPage />
               </RoleProtectedRoute>
             ),
@@ -152,12 +138,7 @@ export const router = createBrowserRouter([
           {
             path: "startups/:startupId/jobs/create",
             element: (
-              <RoleProtectedRoute
-                allowedRoles={[
-                  "ENTREPRENEUR",
-                  "ADMIN",
-                ]}
-              >
+              <RoleProtectedRoute allowedRoles={["ENTREPRENEUR", "ADMIN"]}>
                 <CreateJobPage />
               </RoleProtectedRoute>
             ),
@@ -165,12 +146,7 @@ export const router = createBrowserRouter([
           {
             path: "jobs/:id/edit",
             element: (
-              <RoleProtectedRoute
-                allowedRoles={[
-                  "ENTREPRENEUR",
-                  "ADMIN",
-                ]}
-              >
+              <RoleProtectedRoute allowedRoles={["ENTREPRENEUR", "ADMIN"]}>
                 <EditJobPage />
               </RoleProtectedRoute>
             ),

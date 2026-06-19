@@ -1,19 +1,31 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import { Bookmark, BookmarkCheck } from "lucide-react"
 
 import Button from "../../../components/ui/Button"
 import LoadingSpinner from "../../../components/ui/LoadingSpinner"
 import ErrorState from "../../../components/ui/ErrorState"
 
 import { getStartupById } from "../api/startup.api"
+import {
+  addToWatchlist,
+  checkWatchlistStatus,
+} from "../../investors/api/investor.api"
+import { useAuthStore } from "../../auth/store/auth.store"
 
 import type { Startup } from "../types/startup.types"
 
 function StartupDetailsPage() {
   const { id } = useParams()
+  const user = useAuthStore((state) => state.user)
 
   const [startup, setStartup] = useState<Startup | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
+  const [watchlistMessage, setWatchlistMessage] = useState("")
+
+  const isInvestor = user?.role === "INVESTOR"
 
   useEffect(() => {
     const fetchStartup = async () => {
@@ -22,6 +34,16 @@ function StartupDetailsPage() {
 
         const response = await getStartupById(id)
         setStartup(response.data)
+
+        if (user?.role === "INVESTOR") {
+          const savedResponse = await checkWatchlistStatus(id)
+        
+          
+        
+          setIsSaved(
+            savedResponse.data?.data?.isSaved || false
+          )
+        }
       } catch (error) {
         console.log(error)
       } finally {
@@ -30,14 +52,37 @@ function StartupDetailsPage() {
     }
 
     fetchStartup()
-  }, [id])
+  }, [id, user])
+
+  const handleSaveToWatchlist = async () => {
+    try {
+      if (!id || isSaved) return
+
+      setIsSaving(true)
+      setWatchlistMessage("")
+
+      await addToWatchlist(id)
+
+      setIsSaved(true)
+      setWatchlistMessage("Saved to watchlist")
+    } catch (error: any) {
+      setWatchlistMessage(
+        error.response?.data?.message || "Could not save startup"
+      )
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   if (isLoading) return <LoadingSpinner />
 
   if (!startup) {
     return (
       <div className="mx-auto max-w-4xl px-6 py-8">
-        <ErrorState title="Startup not found" description="This startup profile may have been removed." />
+        <ErrorState
+          title="Startup not found"
+          description="This startup profile may have been removed."
+        />
       </div>
     )
   }
@@ -51,7 +96,11 @@ function StartupDetailsPage() {
         <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-col gap-5 md:flex-row md:items-center">
             {startup.logo ? (
-              <img src={startup.logo} alt={startup.name} className="h-24 w-24 rounded-3xl border border-slate-700 object-cover" />
+              <img
+                src={startup.logo}
+                alt={startup.name}
+                className="h-24 w-24 rounded-3xl border border-slate-700 object-cover"
+              />
             ) : (
               <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-[#0F172A] text-3xl font-bold text-[#F8FAFC]">
                 {startup.name.charAt(0)}
@@ -59,26 +108,66 @@ function StartupDetailsPage() {
             )}
 
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#F59E0B]">Startup Profile</p>
-              <h1 className="mt-2 text-5xl font-black text-[#F8FAFC]">{startup.name}</h1>
-              <p className="mt-3 max-w-2xl text-lg leading-8 text-[#94A3B8]">{startup.tagline}</p>
+              <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#F59E0B]">
+                Startup Profile
+              </p>
+
+              <h1 className="mt-2 text-5xl font-black text-[#F8FAFC]">
+                {startup.name}
+              </h1>
+
+              <p className="mt-3 max-w-2xl text-lg leading-8 text-[#94A3B8]">
+                {startup.tagline}
+              </p>
 
               <div className="mt-5 flex flex-wrap gap-3">
-                <span className="rounded-full border border-[#6366F1]/30 bg-[#6366F1]/15 px-4 py-2 text-sm font-medium text-[#F8FAFC]">{startup.industry}</span>
-                <span className="rounded-full border border-[#F59E0B]/30 bg-[#F59E0B]/15 px-4 py-2 text-sm font-medium text-[#F59E0B]">{startup.fundingStage}</span>
-                <span className="rounded-full border border-slate-700 bg-[#0F172A] px-4 py-2 text-sm text-[#94A3B8]">{startup.location}</span>
+                <span className="rounded-full border border-[#6366F1]/30 bg-[#6366F1]/15 px-4 py-2 text-sm font-medium text-[#F8FAFC]">
+                  {startup.industry}
+                </span>
+
+                <span className="rounded-full border border-[#F59E0B]/30 bg-[#F59E0B]/15 px-4 py-2 text-sm font-medium text-[#F59E0B]">
+                  {startup.fundingStage}
+                </span>
+
+                <span className="rounded-full border border-slate-700 bg-[#0F172A] px-4 py-2 text-sm text-[#94A3B8]">
+                  {startup.location || "Remote"}
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="flex gap-3">
-            {startup.website && (
-              <a href={startup.website} target="_blank" rel="noreferrer">
-                <Button variant="secondary">Visit Website</Button>
-              </a>
-            )}
+          <div className="flex flex-col items-start gap-3 md:items-end">
+            <div className="flex flex-wrap gap-3">
+              {startup.website && (
+                <a href={startup.website} target="_blank" rel="noreferrer">
+                  <Button variant="secondary">Visit Website</Button>
+                </a>
+              )}
 
-            <Button>Connect</Button>
+              {isInvestor && (
+                <button
+                  type="button"
+                  onClick={handleSaveToWatchlist}
+                  disabled={isSaving || isSaved}
+                  title={isSaved ? "Saved to watchlist" : "Save to watchlist"}
+                  className={`flex h-11 w-11 items-center justify-center rounded-2xl border transition ${
+                    isSaved
+                      ? "border-[#6366F1] bg-[#6366F1]/10 text-[#6366F1]"
+                      : "border-slate-700 bg-[#0F172A] text-[#F8FAFC] hover:border-[#6366F1] hover:text-[#6366F1]"
+                  } disabled:cursor-not-allowed disabled:opacity-80`}
+                >
+                  {isSaved ? (
+                    <BookmarkCheck size={20} />
+                  ) : (
+                    <Bookmark size={20} />
+                  )}
+                </button>
+              )}
+            </div>
+
+            {watchlistMessage && (
+              <p className="text-sm text-[#94A3B8]">{watchlistMessage}</p>
+            )}
           </div>
         </div>
       </section>
@@ -86,19 +175,35 @@ function StartupDetailsPage() {
       <section className="mt-10 grid gap-10 lg:grid-cols-[1fr_320px]">
         <div className="space-y-10">
           <section>
-            <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#6366F1]">About</p>
-            <h2 className="mt-3 text-3xl font-black text-[#F8FAFC]">What they are building</h2>
-            <p className="mt-5 text-lg leading-9 text-[#94A3B8]">{startup.description}</p>
+            <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#6366F1]">
+              About
+            </p>
+
+            <h2 className="mt-3 text-3xl font-black text-[#F8FAFC]">
+              What they are building
+            </h2>
+
+            <p className="mt-5 text-lg leading-9 text-[#94A3B8]">
+              {startup.description}
+            </p>
           </section>
 
           <section className="border-t border-slate-700 pt-8">
-            <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#6366F1]">Technology</p>
-            <h2 className="mt-3 text-3xl font-black text-[#F8FAFC]">Tech Stack</h2>
+            <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#6366F1]">
+              Technology
+            </p>
+
+            <h2 className="mt-3 text-3xl font-black text-[#F8FAFC]">
+              Tech Stack
+            </h2>
 
             {startup.techStack?.length ? (
               <div className="mt-5 flex flex-wrap gap-3">
                 {startup.techStack.map((tech) => (
-                  <span key={tech} className="rounded-full border border-slate-700 bg-[#1E293B] px-4 py-2 text-sm text-[#94A3B8]">
+                  <span
+                    key={tech}
+                    className="rounded-full border border-slate-700 bg-[#1E293B] px-4 py-2 text-sm text-[#94A3B8]"
+                  >
                     {tech}
                   </span>
                 ))}
@@ -109,12 +214,21 @@ function StartupDetailsPage() {
           </section>
 
           <section className="border-t border-slate-700 pt-8">
-            <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#6366F1]">Founder</p>
-            <h2 className="mt-3 text-3xl font-black text-[#F8FAFC]">Founder details</h2>
+            <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#6366F1]">
+              Founder
+            </p>
+
+            <h2 className="mt-3 text-3xl font-black text-[#F8FAFC]">
+              Founder details
+            </h2>
 
             <div className="mt-5 flex items-center gap-4">
               {startup.founder.avatar ? (
-                <img src={startup.founder.avatar} alt={startup.founder.name} className="h-16 w-16 rounded-full border border-slate-700 object-cover" />
+                <img
+                  src={startup.founder.avatar}
+                  alt={startup.founder.name}
+                  className="h-16 w-16 rounded-full border border-slate-700 object-cover"
+                />
               ) : (
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#1E293B] text-xl font-bold text-[#F8FAFC]">
                   {startup.founder.name.charAt(0)}
@@ -122,7 +236,10 @@ function StartupDetailsPage() {
               )}
 
               <div>
-                <h3 className="text-xl font-semibold text-[#F8FAFC]">{startup.founder.name}</h3>
+                <h3 className="text-xl font-semibold text-[#F8FAFC]">
+                  {startup.founder.name}
+                </h3>
+
                 <p className="text-[#94A3B8]">{startup.founder.email}</p>
               </div>
             </div>
@@ -130,27 +247,41 @@ function StartupDetailsPage() {
         </div>
 
         <aside className="h-fit rounded-[2rem] border border-slate-700 bg-[#1E293B] p-6">
-          <h2 className="text-xl font-bold text-[#F8FAFC]">Startup Snapshot</h2>
+          <h2 className="text-xl font-bold text-[#F8FAFC]">
+            Startup Snapshot
+          </h2>
 
           <div className="mt-5 space-y-4 text-sm">
             <div className="flex items-center justify-between gap-4 border-b border-slate-700 pb-3">
               <span className="text-[#94A3B8]">Industry</span>
-              <span className="font-medium text-[#F8FAFC]">{startup.industry}</span>
+              <span className="font-medium text-[#F8FAFC]">
+                {startup.industry}
+              </span>
             </div>
 
             <div className="flex items-center justify-between gap-4 border-b border-slate-700 pb-3">
               <span className="text-[#94A3B8]">Funding</span>
-              <span className="font-medium text-[#F8FAFC]">{startup.fundingStage}</span>
+              <span className="font-medium text-[#F8FAFC]">
+                {startup.fundingStage}
+              </span>
             </div>
 
             <div className="flex items-center justify-between gap-4 border-b border-slate-700 pb-3">
               <span className="text-[#94A3B8]">Location</span>
-              <span className="font-medium text-[#F8FAFC]">{startup.location}</span>
+              <span className="font-medium text-[#F8FAFC]">
+                {startup.location || "Remote"}
+              </span>
             </div>
 
             <div className="flex items-center justify-between gap-4">
               <span className="text-[#94A3B8]">Verified</span>
-              <span className={startup.isVerified ? "font-medium text-green-400" : "font-medium text-[#F59E0B]"}>
+              <span
+                className={
+                  startup.isVerified
+                    ? "font-medium text-green-400"
+                    : "font-medium text-[#F59E0B]"
+                }
+              >
                 {startup.isVerified ? "Yes" : "No"}
               </span>
             </div>

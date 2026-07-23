@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
-import Button from "../../../components/ui/Button"
+
 import LoadingSpinner from "../../../components/ui/LoadingSpinner"
 import ErrorState from "../../../components/ui/ErrorState"
 
